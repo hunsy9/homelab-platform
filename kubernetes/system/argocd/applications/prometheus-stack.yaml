@@ -23,6 +23,13 @@ spec:
       name: prometheus-stack-grafana
       jsonPointers:
         - /data
+    - group: apps
+      kind: Deployment
+      name: prometheus-stack-grafana
+      jqPathExpressions:
+        - .spec.template.metadata.annotations["checksum/secret"]
+        - .spec.template.metadata.annotations["checksum/config"]
+        - .spec.template.metadata.annotations["checksum/sc-dashboard-provider-config"]
   syncPolicy:
     automated:
       prune: true

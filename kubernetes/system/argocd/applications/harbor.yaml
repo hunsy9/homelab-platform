@@ -22,6 +22,12 @@ spec:
     - kind: Secret
       jsonPointers:
         - /data
+    - group: apps
+      kind: Deployment
+      jqPathExpressions:
+        - .spec.template.metadata.annotations["checksum/secret"]
+        - .spec.template.metadata.annotations["checksum/secret-jobservice"]
+        - .spec.template.metadata.annotations["checksum/configmap"]
   syncPolicy:
     automated:
       prune: true
