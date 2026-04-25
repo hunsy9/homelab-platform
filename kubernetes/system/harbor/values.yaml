@@ -1,12 +1,5 @@
 expose:
-  type: ingress
-  ingress:
-    className: traefik
-    hosts:
-      core: harbor.seung.site
-  tls:
-    enabled: true
-    certSource: auto
+  type: clusterIP
 
 externalURL: https://harbor.seung.site
 
