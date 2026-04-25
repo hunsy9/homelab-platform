@@ -10,7 +10,6 @@ spec:
       chart: kube-prometheus-stack
       targetRevision: 80.10.0
       helm:
-        releaseName: my-prometheus-stack
         valueFiles:
           - $values/kubernetes/system/monitoring/prometheus-stack/values.yaml
     - repoURL: https://github.com/hunsy9/homelab-platform.git
