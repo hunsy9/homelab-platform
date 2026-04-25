@@ -18,6 +18,11 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: default
+  ignoreDifferences:
+    - kind: Secret
+      name: prometheus-stack-grafana
+      jsonPointers:
+        - /data
   syncPolicy:
     automated:
       prune: true
