@@ -19,8 +19,7 @@ spec:
     server: https://kubernetes.default.svc
     namespace: harbor
   ignoreDifferences:
-    - group: ""
-      kind: Secret
+    - kind: Secret
       jsonPointers:
         - /data
   syncPolicy:
