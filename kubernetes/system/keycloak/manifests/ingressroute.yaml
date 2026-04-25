@@ -10,5 +10,5 @@ spec:
     - kind: Rule
       match: Host(`keycloak.seung.site`)
       services:
-        - name: keycloak
+        - name: keycloak-http
           port: 80

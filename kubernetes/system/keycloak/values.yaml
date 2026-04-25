@@ -1,18 +1,27 @@
-production: true
-proxyHeaders: xforwarded
-httpEnabled: true
+fullnameOverride: keycloak
 
-auth:
-  existingSecret: keycloak-admin
-  passwordSecretKey: admin-password
+command:
+  - "/opt/keycloak/bin/kc.sh"
+  - "start"
+  - "--hostname=keycloak.seung.site"
+  - "--http-enabled=true"
+  - "--http-port=8080"
+  - "--proxy-headers=forwarded"
 
-postgresql:
-  enabled: false
+extraEnv: |
+  - name: KEYCLOAK_ADMIN
+    value: admin
+  - name: KEYCLOAK_ADMIN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-admin
+        key: admin-password
 
-externalDatabase:
-  host: keycloak-db-rw.keycloak.svc.cluster.local
+database:
+  vendor: postgres
+  hostname: keycloak-db-rw
   port: 5432
   database: keycloak
+  username: keycloak
   existingSecret: keycloak-db-app
-  existingSecretUserKey: username
-  existingSecretPasswordKey: password
+  existingSecretKey: password
