@@ -18,6 +18,9 @@ extraEnv: |
         name: keycloak-admin
         key: admin-password
 
+http:
+  relativePath: /
+
 database:
   vendor: postgres
   hostname: keycloak-db-rw
