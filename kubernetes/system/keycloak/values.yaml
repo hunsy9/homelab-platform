@@ -3,10 +3,11 @@ fullnameOverride: keycloak
 command:
   - "/opt/keycloak/bin/kc.sh"
   - "start"
-  - "--hostname=keycloak.seung.site"
+  - "--hostname=https://keycloak.seung.site"
   - "--http-enabled=true"
   - "--http-port=8080"
   - "--proxy-headers=forwarded"
+  - "--hostname-backchannel-dynamic=true"
 
 extraEnv: |
   - name: KEYCLOAK_ADMIN
