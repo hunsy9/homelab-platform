@@ -11,4 +11,4 @@ providers:
       enabled: true
 
 service:
-  type: LoadBalancer
+  type: NodePort
