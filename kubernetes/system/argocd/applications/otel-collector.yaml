@@ -10,6 +10,7 @@ spec:
       chart: opentelemetry-collector
       targetRevision: 0.147.0
       helm:
+        releaseName: my-opentelemetry-collector
         valueFiles:
           - $values/kubernetes/system/monitoring/otel-collector/values.yaml
     - repoURL: https://github.com/hunsy9/homelab-platform.git

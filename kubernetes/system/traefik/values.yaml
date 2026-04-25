@@ -3,10 +3,7 @@ api:
 
 ingressRoute:
   dashboard:
-    enabled: true
-    matchRule: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
-    entryPoints:
-      - traefik
+    enabled: false
 
 service:
   type: LoadBalancer
