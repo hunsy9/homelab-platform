@@ -1,0 +1,60 @@
+expose:
+  type: ingress
+  ingress:
+    className: traefik
+    hosts:
+      core: harbor.seung.site
+  tls:
+    enabled: true
+    certSource: auto
+
+externalURL: https://harbor.seung.site
+
+# TODO: move to SOPS encrypted secret
+harborAdminPassword: CHANGE_ME
+
+persistence:
+  enabled: true
+  persistentVolumeClaim:
+    registry:
+      storageClass: longhorn
+      size: 50Gi
+    database:
+      storageClass: longhorn
+      size: 5Gi
+    redis:
+      storageClass: longhorn
+      size: 1Gi
+    jobservice:
+      storageClass: longhorn
+      size: 1Gi
+    trivy:
+      storageClass: longhorn
+      size: 5Gi
+
+nodeSelector:
+  node-role.kubernetes.io/harbor: "true"
+
+core:
+  nodeSelector:
+    node-role.kubernetes.io/harbor: "true"
+portal:
+  nodeSelector:
+    node-role.kubernetes.io/harbor: "true"
+jobservice:
+  nodeSelector:
+    node-role.kubernetes.io/harbor: "true"
+registry:
+  nodeSelector:
+    node-role.kubernetes.io/harbor: "true"
+trivy:
+  nodeSelector:
+    node-role.kubernetes.io/harbor: "true"
+database:
+  internal:
+    nodeSelector:
+      node-role.kubernetes.io/harbor: "true"
+redis:
+  internal:
+    nodeSelector:
+      node-role.kubernetes.io/harbor: "true"

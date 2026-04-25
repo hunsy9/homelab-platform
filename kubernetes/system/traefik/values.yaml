@@ -1,0 +1,12 @@
+api:
+  dashboard: true
+
+ingressRoute:
+  dashboard:
+    enabled: true
+    matchRule: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+    entryPoints:
+      - traefik
+
+service:
+  type: LoadBalancer

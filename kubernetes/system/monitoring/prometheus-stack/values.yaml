@@ -1,0 +1,4 @@
+# kube-prometheus-stack
+# Installed with default values
+# Chart: kube-prometheus-stack-80.10.0
+# App: v0.87.1

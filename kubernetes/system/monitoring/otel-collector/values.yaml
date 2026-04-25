@@ -1,0 +1,102 @@
+mode: daemonset
+
+image:
+  repository: otel/opentelemetry-collector-k8s
+
+presets:
+  kubernetesAttributes:
+    enabled: true
+  logsCollection:
+    enabled: true
+    includeCollectorLogs: false
+    maxRecombineLogSize: 102400
+  kubeletMetrics:
+    enabled: true
+
+config:
+  receivers:
+    filelog:
+      start_at: end
+    filelog/audit:
+      include:
+        - /var/log/kubernetes/audit/audit.log
+      operators:
+        - type: json_parser
+          timestamp:
+            parse_from: attributes.requestReceivedTimestamp
+            layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+        - type: add
+          field: attributes.log_type
+          value: k8s_audit
+      start_at: end
+    otlp:
+      protocols:
+        grpc:
+          endpoint: ${env:MY_POD_IP}:4317
+        http:
+          endpoint: ${env:MY_POD_IP}:4318
+    jaeger:
+      protocols:
+        grpc:
+          endpoint: ${env:MY_POD_IP}:14250
+        thrift_compact:
+          endpoint: ${env:MY_POD_IP}:6831
+        thrift_http:
+          endpoint: ${env:MY_POD_IP}:14268
+    zipkin:
+      endpoint: ${env:MY_POD_IP}:9411
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: opentelemetry-collector
+            scrape_interval: 10s
+            static_configs:
+              - targets:
+                  - ${env:MY_POD_IP}:8888
+
+  processors:
+    batch: {}
+    memory_limiter:
+      check_interval: 5s
+      limit_percentage: 80
+      spike_limit_percentage: 25
+
+  exporters:
+    debug: {}
+    otlphttp/loki:
+      endpoint: http://loki-gateway.default.svc.cluster.local/otlp
+      tls:
+        insecure: true
+
+  service:
+    extensions:
+      - health_check
+    pipelines:
+      logs:
+        receivers: [otlp, filelog/audit]
+        processors: [memory_limiter, batch]
+        exporters: [debug, otlphttp/loki]
+      metrics:
+        receivers: [otlp, prometheus]
+        processors: [memory_limiter, batch]
+        exporters: [debug]
+      traces:
+        receivers: [otlp, jaeger, zipkin]
+        processors: [memory_limiter, batch]
+        exporters: [debug]
+
+extraVolumes:
+  - name: audit-logs
+    hostPath:
+      path: /var/log/kubernetes/audit
+      type: DirectoryOrCreate
+
+extraVolumeMounts:
+  - name: audit-logs
+    mountPath: /var/log/kubernetes/audit
+    readOnly: true
+
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
