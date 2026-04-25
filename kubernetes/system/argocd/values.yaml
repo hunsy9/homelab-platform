@@ -2,3 +2,73 @@ configs:
   params:
     server.insecure: true
     controller.resource.health.persist: true
+  cmp:
+    create: true
+    plugins:
+      ksops:
+        allowConcurrency: true
+        discover:
+          find:
+            command:
+              - find
+              - "."
+              - -name
+              - "*.enc.yaml"
+        generate:
+          command:
+            - /bin/sh
+            - -c
+            - |
+              kustomize build --enable-alpha-plugins . || cat *.enc.yaml | sops --decrypt --input-type yaml --output-type yaml /dev/stdin
+
+repoServer:
+  initContainers:
+    - name: install-ksops
+      image: viaductoss/ksops:v4.3.3
+      command:
+        - /bin/sh
+        - -c
+        - |
+          cp /usr/local/bin/ksops /custom-tools/ksops
+          cp /usr/local/bin/kustomize /custom-tools/kustomize
+          cp /usr/local/bin/sops /custom-tools/sops
+      volumeMounts:
+        - name: custom-tools
+          mountPath: /custom-tools
+  extraContainers:
+    - name: ksops
+      command:
+        - /var/run/argocd/argocd-cmp-server
+      image: quay.io/argoproj/argocd:v2.14.11
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+      env:
+        - name: SOPS_AGE_KEY_FILE
+          value: /sops-age/keys.txt
+      volumeMounts:
+        - name: var-files
+          mountPath: /var/run/argocd
+        - name: plugins
+          mountPath: /home/argocd/cmp-server/plugins
+        - name: cmp-tmp
+          mountPath: /tmp
+        - name: custom-tools
+          mountPath: /usr/local/bin/ksops
+          subPath: ksops
+        - name: custom-tools
+          mountPath: /usr/local/bin/kustomize
+          subPath: kustomize
+        - name: custom-tools
+          mountPath: /usr/local/bin/sops
+          subPath: sops
+        - name: sops-age
+          mountPath: /sops-age
+  volumes:
+    - name: custom-tools
+      emptyDir: {}
+    - name: cmp-tmp
+      emptyDir: {}
+    - name: sops-age
+      secret:
+        secretName: sops-age
