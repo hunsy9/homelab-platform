@@ -28,6 +28,7 @@ spec:
         - .spec.template.metadata.annotations["checksum/secret"]
         - .spec.template.metadata.annotations["checksum/secret-jobservice"]
         - .spec.template.metadata.annotations["checksum/configmap"]
+        - .spec.template.metadata.annotations["checksum/secret-core"]
   syncPolicy:
     automated:
       prune: true
