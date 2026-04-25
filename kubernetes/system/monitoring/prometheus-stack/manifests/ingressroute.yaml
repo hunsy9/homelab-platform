@@ -10,5 +10,5 @@ spec:
     - kind: Rule
       match: Host(`grafana.seung.site`)
       services:
-        - name: my-prometheus-stack-grafana
+        - name: prometheus-stack-grafana
           port: 80
