@@ -10,9 +10,6 @@ expose:
 
 externalURL: https://harbor.seung.site
 
-# TODO: move to SOPS encrypted secret
-harborAdminPassword: CHANGE_ME
-
 persistence:
   enabled: true
   persistentVolumeClaim:
