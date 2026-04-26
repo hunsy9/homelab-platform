@@ -2,3 +2,26 @@
 # Installed with default values
 # Chart: kube-prometheus-stack-80.10.0
 # App: v0.87.1
+grafana:
+  grafana.ini:
+    server:
+    # The full public facing url you use in browser, used for redirects and emails
+      root_url: https://grafana.seung.site
+    # https://grafana.com/docs/grafana/latest/auth/github/#enable-github-in-grafana
+    auth.generic_oauth:
+      enabled: true
+      allow_sign_up: true
+      name: Keycloak
+      scopes: openid email profile offline_access roles
+      auth_url: https://keycloak.seung.site/realms/homelab/protocol/openid-connect/auth
+      token_url: https://keycloak.seung.site/realms/homelab/protocol/openid-connect/token
+      api_url: https://keycloak.seung.site/realms/homelab/protocol/openid-connect/userinfo
+      client_id: grafana
+      client_secret: $__file{/etc/secrets/oidc/client-secret}
+      role_attribute_path: contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'
+  extraSecretMounts:                                                                                                                                        
+    - name: oidc-secret                                                                                                                                     
+      secretName: grafana-oidc                                                                                                                              
+      defaultMode: 0440                                                                                                                                     
+      mountPath: /etc/secrets/oidc                                                                                                                          
+      readOnly: true
