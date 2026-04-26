@@ -15,6 +15,9 @@ spec:
     - repoURL: https://github.com/hunsy9/homelab-platform.git
       targetRevision: main
       ref: values
+    - repoURL: https://github.com/hunsy9/homelab-platform.git
+      targetRevision: main
+      path: kubernetes/system/traefik/manifests
   destination:
     server: https://kubernetes.default.svc
     namespace: default
