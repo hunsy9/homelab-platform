@@ -9,6 +9,8 @@ spec:
     repoURL: https://github.com/hunsy9/homelab-platform.git
     targetRevision: main
     path: kubernetes/system/argocd/applications
+    directory:
+      recurse: true
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
