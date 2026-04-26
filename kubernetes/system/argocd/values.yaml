@@ -13,6 +13,8 @@ configs:
         - openid                                                                                                                                            
         - profile                                                                                                                                           
         - email
+  rbac:
+    policy.default: role:admin
   cmp:
     create: true
     plugins:
